@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react'
-import './App.css'
 import Header from './components/Header/Header'
 import SettingsBar, { type Settings } from './components/SettingsBar/SettingsBar'
 import CourseList from './components/CourseList/CourseList'
@@ -7,13 +6,22 @@ import TimeGrid from './components/TimeGrid/TimeGrid'
 import DataTransfer from './components/DataTransfer/DataTransfer'
 import DevFill from './components/DevFill/DevFill'
 import RouteResults from './components/RouteResults/RouteResults'
+import SolverOverlay from './components/SolverOverlay/SolverOverlay'
 import { COURSES, OLD_COURSES, NEW_COURSES } from './data/gameData'
 import {
   comboKey,
   findTopRoutes,
   type TimesData,
 } from './utils/optimizer'
+import { useExactRoutes } from './hooks/useExactRoutes'
 import type { Course, Rider, Star } from './types/types'
+import './App.css'
+
+const COURSE_GROUPS: Record<string, Course[]> = {
+  all: COURSES,
+  old: OLD_COURSES,
+  new: NEW_COURSES,
+}
 
 const TIMES_KEY = 'kar-router:times'
 const SETTINGS_KEY = 'kar-router:settings'
@@ -90,6 +98,8 @@ function App() {
     })
   }
 
+  // Automatic quick check: same solver, bounded node budget. If it finishes
+  // under budget (`truncated: false`) the routes are already provably optimal.
   const allResult = useMemo(
     () => findTopRoutes(COURSES, times, settings),
     [times, settings],
@@ -102,6 +112,9 @@ function App() {
     () => findTopRoutes(NEW_COURSES, times, settings),
     [times, settings],
   )
+
+  // On-demand exhaustive solve, run in a worker behind a blocking overlay.
+  const exact = useExactRoutes(times, settings, COURSE_GROUPS)
 
   return (
     <>
@@ -131,10 +144,17 @@ function App() {
         />
       </main>
       <RouteResults
-        all={allResult}
-        oldCourses={oldResult}
-        newCourses={newResult}
+        all={exact.results?.all ?? allResult}
+        oldCourses={exact.results?.old ?? oldResult}
+        newCourses={exact.results?.new ?? newResult}
+        onFindOptimal={exact.start}
       />
+      {exact.solving && (
+        <SolverOverlay
+          nodesSearched={exact.nodesSearched}
+          onCancel={exact.cancel}
+        />
+      )}
     </>
   )
 }

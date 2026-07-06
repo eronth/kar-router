@@ -2,6 +2,8 @@ import { useState } from 'react'
 import type { SolverResult } from '../../utils/optimizer'
 import RouteCard, { PICK_STYLES, type PickStyle } from '../RouteCard/RouteCard'
 import './RouteResults.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWarning } from '@fortawesome/free-solid-svg-icons'
 
 const TABS = [
   { id: 'all', label: 'All Courses' },
@@ -15,9 +17,16 @@ interface Props {
   all: SolverResult
   oldCourses: SolverResult
   newCourses: SolverResult
+  /** Kicks off the exhaustive guaranteed-optimal solve. */
+  onFindOptimal: () => void
 }
 
-export default function RouteResults({ all, oldCourses, newCourses }: Props) {
+export default function RouteResults({
+  all,
+  oldCourses,
+  newCourses,
+  onFindOptimal,
+}: Props) {
   const [tab, setTab] = useState<TabId>('all')
   const [pickStyle, setPickStyle] = useState<PickStyle>('inline')
   const result = tab === 'all' ? all : tab === 'old' ? oldCourses : newCourses
@@ -71,11 +80,21 @@ export default function RouteResults({ all, oldCourses, newCourses }: Props) {
       ) : (
         <>
           {result.truncated && (
-            <p className="status">
-              Search space was huge, so these are the
-              best routes found within
-              the search budget — they may not be perfectly optimal.
-            </p>
+            <div className="status truncated-notice">
+              <p>
+                <span className="warning"><FontAwesomeIcon icon={faWarning} /> Warning: </span>
+                Search space was huge, so these are the best routes found
+                within the quick-check budget — they may not be perfectly
+                optimal.
+              </p>
+              <button
+                type="button"
+                className="find-optimal"
+                onClick={onFindOptimal}
+              >
+                Find perfectly optimal routes (slow)
+              </button>
+            </div>
           )}
           <div className="route-cards">
             {result.routes.map((route, index) => (
