@@ -46,6 +46,11 @@
     rgb(0 0 0 / 0.4) 0 10px 15px -3px, rgb(0 0 0 / 0.25) 0 4px 6px -2px
   );
 
+  --warning: light-dark(
+    oklch(58% 0.21 25),
+    oklch(58% 0.21 25)
+  );
+
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
@@ -130,4 +135,9 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+.warning {
+  font-weight: 600;
+  color: var(--warning);
 }
