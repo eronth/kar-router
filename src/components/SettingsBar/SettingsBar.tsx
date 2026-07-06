@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import './SettingsBar.css'
 
 export interface Settings {
@@ -27,9 +28,10 @@ const OPTIONS: { key: keyof Settings; label: string; hint: string }[] = [
 interface Props {
   settings: Settings
   onChange: (settings: Settings) => void
+  children?: ReactNode
 }
 
-export default function SettingsBar({ settings, onChange }: Props) {
+export default function SettingsBar({ settings, onChange, children }: Props) {
   return (
     <div className="settings-bar">
       <span className="label">Ruleset</span>
@@ -48,6 +50,8 @@ export default function SettingsBar({ settings, onChange }: Props) {
           {option.label}
         </button>
       ))}
+      {children && <span className="divider" aria-hidden="true" />}
+      {children}
     </div>
   )
 }

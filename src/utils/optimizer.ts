@@ -51,8 +51,7 @@ interface Entry {
 const LEGENDARY_SET: ReadonlySet<string> = new Set(LEGENDARY_STARS)
 
 // Node budget keeps worst-case dense grids responsive;
-// realistic sparse data
-// never gets close to it.
+// realistic sparse data never gets close to it.
 const NODE_LIMIT = 500_000
 
 /**

@@ -4,6 +4,7 @@ import Header from './components/Header/Header'
 import SettingsBar, { type Settings } from './components/SettingsBar/SettingsBar'
 import CourseList from './components/CourseList/CourseList'
 import TimeGrid from './components/TimeGrid/TimeGrid'
+import DataTransfer from './components/DataTransfer/DataTransfer'
 import RouteResults from './components/RouteResults/RouteResults'
 import { COURSES, OLD_COURSES, NEW_COURSES } from './data/gameData'
 import {
@@ -73,6 +74,21 @@ function App() {
 
   const clearAllTimes = () => setTimes({})
 
+  const importReplace = (imported: TimesData, importedSettings: Settings | null) => {
+    setTimes(imported)
+    if (importedSettings) setSettings(importedSettings)
+  }
+
+  const importMerge = (imported: TimesData) => {
+    setTimes((prev) => {
+      const next = { ...prev }
+      for (const [course, record] of Object.entries(imported)) {
+        next[course as Course] = { ...next[course as Course], ...record }
+      }
+      return next
+    })
+  }
+
   const allResult = useMemo(
     () => findTopRoutes(COURSES, times, settings),
     [times, settings],
@@ -89,7 +105,14 @@ function App() {
   return (
     <>
       <Header />
-      <SettingsBar settings={settings} onChange={setSettings} />
+      <SettingsBar settings={settings} onChange={setSettings}>
+        <DataTransfer
+          times={times}
+          settings={settings}
+          onReplace={importReplace}
+          onMerge={importMerge}
+        />
+      </SettingsBar>
       <main className="planner">
         <CourseList
           times={times}
