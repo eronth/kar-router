@@ -19,14 +19,36 @@
   }
 
   .riders-row-label {
-    padding-inline: 1em;
-    text-align: right;
+    position: relative;
+    padding: 3px 6px;
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
     color: var(--text);
-    background: var(--code-bg);
+    background:
+      linear-gradient(
+        to top right,
+        transparent calc(50% - 0.5px),
+        var(--border) calc(50% - 0.5px),
+        var(--border) calc(50% + 0.5px),
+        transparent calc(50% + 0.5px)
+      ),
+      var(--code-bg);
+
+    .riders-label {
+      position: absolute;
+      top: 2px;
+      right: 12px;
+      rotate: 13deg;
+    }
+
+    .stars-label {
+      position: absolute;
+      bottom: 2px;
+      left: 12px;
+      rotate: 13deg;
+    }
   }
 
   .rider-head {

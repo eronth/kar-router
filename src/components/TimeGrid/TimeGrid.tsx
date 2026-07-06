@@ -98,7 +98,10 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
         <table>
           <thead>
             <tr>
-              <th className="riders-row-label">Riders</th>
+              <th className="riders-row-label">
+                <span className="riders-label">Riders</span>
+                <span className="stars-label">Stars</span>
+              </th>
               {RIDERS.map((rider) => (
                 <th
                   key={rider}
