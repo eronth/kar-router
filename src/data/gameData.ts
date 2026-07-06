@@ -59,15 +59,15 @@ export const NEW_COURSES: NewCourse[] = [
   'Floria  Fields', 'Waveflow Waters', 'Airtopia Ruins',
   'Crystalline Fissure', 'Steamgust Forge', 'Cavernous Corners',
   'Cyberion Highway', 'Mount Amberfalls', 'Galactic Nova',
-]
+];
 
 export const OLD_COURSES: OldCourse[] = [
   'Fantasy Meadows', 'Celestial Valley', 'Sky Sands',
   'Frozen Hillside', 'Magma Flows', 'Beanstalk Park',
-  'Machien Passage', 'Checker Knights', 'Nebula Belt',
-]
+  'Machine Passage', 'Checker Knights', 'Nebula Belt',
+];
 
-export const COURSES: Course[] = [...OLD_COURSES, ...NEW_COURSES]
+export const COURSES: Course[] = [...OLD_COURSES, ...NEW_COURSES];
 
 export const RIDERS: Rider[] = [
   'Kirby', 'King Dedede', 'Meta Knight', 'Waddle Dee',
@@ -76,7 +76,7 @@ export const RIDERS: Rider[] = [
   'Scarfy', 'Starman', 'Lololo & Lalala', 'Marx',
   'Daroach', 'Magolor', 'Taranza', 'Susie',
   'Noir Dedede',
-]
+];
 
 export const RIDER_ICONS: Record<Rider, string> = {
   'Kirby': kirbyIcon,
@@ -100,7 +100,7 @@ export const RIDER_ICONS: Record<Rider, string> = {
   'Taranza': taranzaIcon,
   'Susie': susieIcon,
   'Noir Dedede': noirDededeIcon,
-}
+};
 
 export const OLD_STARS: OldStar[] = [
   'Warp Star', 'Compact Star', 'Winged Star', 'Shadow Star',
@@ -108,19 +108,19 @@ export const OLD_STARS: OldStar[] = [
   'Rocket Star', 'Swerve Star', 'Turbo Star', 'Jet Star',
   'Wheelie Bike', 'Rex Wheelie', 'Wheelie Scooter',
   'Flight Warp Star',
-]
+];
 
 export const NEW_STARS: NewStar[] = [
   'Hop Star', 'Vampire Star', 'Paper Star', 'Chariot',
   'Battle Chariot', 'Tank Star', 'Bull Tank',
   'Transform Star',
-]
+];
 
 export const LEGENDARY_STARS: LegendaryStar[] = [
   'Dragoon', 'Hydra', 'Leo', 'Gigantes',
-]
+];
 
-export const STARS: Star[] = [...OLD_STARS, ...NEW_STARS, ...LEGENDARY_STARS]
+export const STARS: Star[] = [...OLD_STARS, ...NEW_STARS, ...LEGENDARY_STARS];
 
 export const STAR_ICONS: Record<Star, string> = {
   'Warp Star': warpStarIcon,
@@ -151,16 +151,16 @@ export const STAR_ICONS: Record<Star, string> = {
   'Hydra': hydraIcon,
   'Leo': leoIcon,
   'Gigantes': gigantesIcon,
-}
+};
 
 export interface StarGroup {
   label: string
   legendary: boolean
   stars: Star[]
-}
+};
 
 export const STAR_GROUPS: StarGroup[] = [
   { label: 'Old Stars', legendary: false, stars: OLD_STARS },
   { label: 'New Stars', legendary: false, stars: NEW_STARS },
   { label: 'Legendary Stars', legendary: true, stars: LEGENDARY_STARS },
-]
+];

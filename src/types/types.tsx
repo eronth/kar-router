@@ -6,7 +6,7 @@ export type NewCourse
 export type OldCourse
   = 'Fantasy Meadows' | 'Celestial Valley' | 'Sky Sands'
   | 'Frozen Hillside' | 'Magma Flows' | 'Beanstalk Park'
-  | 'Machien Passage' | 'Checker Knights' | 'Nebula Belt';
+  | 'Machine Passage' | 'Checker Knights' | 'Nebula Belt';
 
 export type Course = NewCourse | OldCourse;
 

@@ -3,7 +3,25 @@ import type { Route } from "../../utils/optimizer";
 import { formatMs } from "../../utils/time";
 import "./RouteCard.css";
 
-export default function RouteCard({ route, rank }: { route: Route; rank: number }) {
+export const PICK_STYLES = [
+  { id: "inline", label: "1", title: "Everything on one line" },
+  { id: "time-below", label: "2", title: "Time on its own row" },
+  { id: "time-icons", label: "3", title: "Second row: time, then icons" },
+  { id: "icons-time", label: "4", title: "Second row: icons, then time" },
+  { id: "split", label: "5", title: "Second row: star, time, rider" },
+] as const;
+
+export type PickStyle = (typeof PICK_STYLES)[number]["id"];
+
+export default function RouteCard({
+  route,
+  rank,
+  pickStyle = "inline",
+}: {
+  route: Route;
+  rank: number;
+  pickStyle?: PickStyle;
+}) {
   return (<div className="route-card">
 
     <div className="route-head">
@@ -11,22 +29,36 @@ export default function RouteCard({ route, rank }: { route: Route; rank: number 
       <span className="total">{formatMs(route.totalMs)}</span>
     </div>
 
-    <ul>
-      {route.picks.map((pick) => (
-        <li key={pick.course}>
+    <div className="route-body">
+      {route.picks.map((pick) => {
+        const course = (
           <span className="course" title={pick.course}>
             {pick.course}
           </span>
-          <img src={STAR_ICONS[pick.star]} alt={pick.star} title={pick.star} />
-          <img
-            src={RIDER_ICONS[pick.rider]}
-            alt={pick.rider}
-            title={pick.rider}
-          />
-          <span className="time">{formatMs(pick.ms)}</span>
-        </li>
-      ))}
-    </ul>
-    
+        );
+        const star = <img src={STAR_ICONS[pick.star]} alt={pick.star} title={pick.star} />;
+        const rider = <img src={RIDER_ICONS[pick.rider]} alt={pick.rider} title={pick.rider}/>;
+        const time = <span className="time">{formatMs(pick.ms)}</span>;
+
+        if (pickStyle === "inline") {
+          return (<div className="pick" key={pick.course}>
+            {course}{star}{rider}{time}
+          </div>);
+        }
+        return (<div className="pick pick-stacked" key={pick.course}>
+          <div className="pick-row">
+            {course}
+            {pickStyle === "time-below" && <>{star}{rider}</>}
+          </div>
+          <div className="pick-row">
+            {pickStyle === "time-below" && time}
+            {pickStyle === "time-icons" && <>{time}{star}{rider}</>}
+            {pickStyle === "icons-time" && <>{star}{rider}{time}</>}
+            {pickStyle === "split" && <>{star}{time}{rider}</>}
+          </div>
+        </div>);
+      })}
+    </div>
+
   </div>)
 }

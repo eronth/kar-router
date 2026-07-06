@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { SolverResult } from '../../utils/optimizer'
-import RouteCard from '../RouteCard/RouteCard'
+import RouteCard, { PICK_STYLES, type PickStyle } from '../RouteCard/RouteCard'
 import './RouteResults.css'
 
 const TABS = [
@@ -19,6 +19,7 @@ interface Props {
 
 export default function RouteResults({ all, oldCourses, newCourses }: Props) {
   const [tab, setTab] = useState<TabId>('all')
+  const [pickStyle, setPickStyle] = useState<PickStyle>('inline')
   const result = tab === 'all' ? all : tab === 'old' ? oldCourses : newCourses
 
   return (
@@ -34,6 +35,23 @@ export default function RouteResults({ all, oldCourses, newCourses }: Props) {
               onClick={() => setTab(t.id)}
             >
               {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="pick-style-toggle">
+        <span>Pill style</span>
+        <div className="tabs">
+          {PICK_STYLES.map((s) => (
+            <button
+              key={s.id}
+              type="button"
+              title={s.title}
+              className={pickStyle === s.id ? 'active' : undefined}
+              onClick={() => setPickStyle(s.id)}
+            >
+              {s.label}
             </button>
           ))}
         </div>
@@ -61,7 +79,7 @@ export default function RouteResults({ all, oldCourses, newCourses }: Props) {
           )}
           <div className="route-cards">
             {result.routes.map((route, index) => (
-              <RouteCard key={index} route={route} rank={index + 1} />
+              <RouteCard key={index} route={route} rank={index + 1} pickStyle={pickStyle} />
             ))}
           </div>
         </>
