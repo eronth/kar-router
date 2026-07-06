@@ -1,0 +1,16 @@
+
+.header {
+  padding: 20px;
+  text-align: center;
+
+  h1 {
+    font-size: 56px;
+    letter-spacing: -.2rem;
+
+    .highlight {
+      letter-spacing: -.6rem;
+      color: var(--accent);
+      font-weight: bold;
+    }
+  }
+}
