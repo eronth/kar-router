@@ -43,6 +43,8 @@
     .spark-3 { --tx: 4px; --ty: -34px; animation-delay: 0.09s; }
     
     .highlight {
+      position: relative;
+      z-index: 1;
       letter-spacing: -.6rem;
       color: var(--accent);
       font-weight: bold;
@@ -50,6 +52,7 @@
     
     .base-text {
       letter-spacing: -.2rem;
+      margin-left: .05rem;
     }
   }
 }
