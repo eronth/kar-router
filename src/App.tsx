@@ -63,6 +63,16 @@ function App() {
     })
   }
 
+  const clearCourseTimes = (course: Course) => {
+    setTimes((prev) => {
+      const next = { ...prev }
+      delete next[course]
+      return next
+    })
+  }
+
+  const clearAllTimes = () => setTimes({})
+
   const allResult = useMemo(
     () => findTopRoutes(COURSES, times, settings),
     [times, settings],
@@ -91,6 +101,8 @@ function App() {
           record={times[selectedCourse] ?? {}}
           allowLegendary={settings.allowLegendary}
           onSetTime={setTime}
+          onClearCourse={clearCourseTimes}
+          onClearAll={clearAllTimes}
         />
       </main>
       <RouteResults

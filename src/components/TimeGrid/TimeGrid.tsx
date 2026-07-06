@@ -64,9 +64,18 @@ interface Props {
   record: CourseTimes
   allowLegendary: boolean
   onSetTime: (course: Course, star: Star, rider: Rider, ms: number | null) => void
+  onClearCourse: (course: Course) => void
+  onClearAll: () => void
 }
 
-export default function TimeGrid({ course, record, allowLegendary, onSetTime }: Props) {
+export default function TimeGrid({
+  course,
+  record,
+  allowLegendary,
+  onSetTime,
+  onClearCourse,
+  onClearAll,
+}: Props) {
   const entries = Object.values(record)
   const bestMs = entries.length > 0 ? Math.min(...entries) : null
   const [selStar, setSelStar] = useState<Star | null>(null)
@@ -92,7 +101,11 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
   return (
     <div className="time-grid">
 
-      <TimeGridTitleRegion course={course} />
+      <TimeGridTitleRegion
+        course={course}
+        onClearCourse={onClearCourse}
+        onClearAll={onClearAll}
+      />
 
       <div className="grid-scroll">
         <table>
