@@ -120,8 +120,10 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
               <tbody key={group.label} className={groupOff ? 'off' : undefined}>
                 <tr className="group-row">
                   <th colSpan={RIDERS.length + 1}>
-                    {group.label}
-                    {groupOff && ' (excluded by ruleset)'}
+                    <span>
+                      {group.label}
+                      {groupOff && ' (excluded by ruleset)'}
+                    </span>
                   </th>
                 </tr>
                 {group.stars.map((star) => (

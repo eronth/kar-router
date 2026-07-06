@@ -5,22 +5,44 @@
   --input-min-width: 3rem;
 
   .grid-scroll {
-    overflow-x: auto;
+    /* Scroll both axes here so the sticky header/star column have a
+       scrollport to stick to; sticky cannot escape the overflow-x box. */
+    overflow: auto;
+    max-height: calc(100dvh - 40px);
   }
 
   table {
-    border-collapse: collapse;
+    /* Collapsed borders detach from position: sticky cells, so draw each
+       cell's right/bottom edge instead and patch the outer edges below. */
+    border-collapse: separate;
+    border-spacing: 0;
     width: 100%;
   }
 
   th,
   td {
-    border: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     padding: 0;
   }
 
+  thead th {
+    border-top: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+
+  th:first-child,
+  td:first-child {
+    border-left: 1px solid var(--border);
+  }
+
   .riders-row-label {
-    position: relative;
+    /* Sticky both axes: the top-left corner stays put over header and
+       star column alike. It still anchors the absolute labels inside. */
+    left: 0;
+    z-index: 3;
     padding: 3px 6px;
     font-size: 11px;
     font-weight: 600;
@@ -55,7 +77,10 @@
   .rider-head {
     width: 44px;
     padding: 3px 0 1px;
-    background: var(--social-bg);
+    /* --social-bg is translucent; back it with the opaque page color so
+       scrolled content doesn't show through the sticky cells. */
+    background-color: var(--bg);
+    background-image: linear-gradient(var(--social-bg), var(--social-bg));
     text-align: center;
 
     img {
@@ -74,13 +99,25 @@
     color: var(--text);
     background: var(--code-bg);
     padding: 4px 8px;
+
+    /* The cell spans the whole table; keep the label text in view
+       while scrolling horizontally. */
+    span {
+      display: inline-block;
+      position: sticky;
+      left: 8px;
+    }
   }
 
   .star-head {
     width: 118px;
     padding: var(--star-head-top-bottom-padding) var(--star-head-left-right-padding);
-    background: var(--social-bg);
+    background-color: var(--bg);
+    background-image: linear-gradient(var(--social-bg), var(--social-bg));
     font-weight: 400;
+    position: sticky;
+    left: 0;
+    z-index: 1;
 
     div {
       display: flex;
@@ -169,12 +206,14 @@
     user-select: none;
   }
 
+  /* Sticky header cells swap only the image layer so the opaque
+     background-color underneath keeps covering scrolled content. */
   .rider-head:hover,
-  .star-head:hover {
-    background: var(--accent-bg);
+  .star-head:hover,
+  th.sel {
+    background-image: linear-gradient(var(--accent-bg), var(--accent-bg));
   }
 
-  th.sel,
   td.sel,
   tbody tr:hover td.sel {
     background: var(--accent-bg);
