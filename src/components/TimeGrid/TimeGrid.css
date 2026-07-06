@@ -83,16 +83,18 @@
   }
 
   tbody td {
-    /* Acts as min-height; gives the input's height: 100% a base to resolve against. */
-    height: 1px;
+    /* Containing block for the input; the input is out of flow, so the
+       star-head alone drives row height. Cell height acts as a row-height
+       floor in case a row ever lacks header content. */
+    position: relative;
+    height: 24px;
   }
 
   td input {
-    display: block;
-    width: 100%;
-    height: 100%;
-    min-height: calc(var(--star-head-img-size) 
-      + 2 * var(--star-head-top-bottom-padding));
+    /* Fill the cell absolutely: percentage heights inside table cells are
+       unreliable, but inset tracks the real cell size at any row height. */
+    position: absolute;
+    inset: 0;
     box-sizing: border-box;
     border: none;
     background: transparent;
