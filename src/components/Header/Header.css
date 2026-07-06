@@ -4,13 +4,73 @@
   text-align: center;
 
   h1 {
-    font-size: 56px;
-    letter-spacing: -.2rem;
+    font-size: 3rem;
 
+    &:hover {
+      .star {
+        animation: star-bounce 0.3s ease;
+      }
+
+      .spark {
+        animation: spark-shoot 0.5s ease-out forwards;
+      }
+    }
+
+    .star-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .star {
+      font-size: 2.6rem;
+      transition: color 0.5s ease;
+      transform: rotate(13deg);
+      color: var(--star);
+    }
+
+    .spark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      font-size: 0.7rem;
+      color: var(--star);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .spark-1 { --tx: -26px; --ty: -24px; }
+    .spark-2 { --tx: 28px; --ty: -18px; animation-delay: 0.05s; }
+    .spark-3 { --tx: 4px; --ty: -34px; animation-delay: 0.09s; }
+    
     .highlight {
       letter-spacing: -.6rem;
       color: var(--accent);
       font-weight: bold;
     }
+    
+    .base-text {
+      letter-spacing: -.2rem;
+    }
+  }
+}
+
+@keyframes star-bounce {
+  0% { transform: rotate(13deg); }
+  40% { transform: rotate(20deg); }
+  70% { transform: rotate(11deg); }
+  100% { transform: rotate(13deg); }
+}
+
+@keyframes spark-shoot {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1) rotate(120deg);
   }
 }
