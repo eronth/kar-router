@@ -64,13 +64,9 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
 
   return (
     <div className="time-grid">
-      <div className="grid-title">
-        <h2>{course}</h2>
-        <span className="hint">
-          Enter times as m:ss.xx or seconds — Enter or click away to save,
-          clear to delete
-        </span>
-      </div>
+
+      <TimeGridTitleRegion course={course} />
+
       <div className="grid-scroll">
         <table>
           <thead>

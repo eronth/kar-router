@@ -1,33 +1,4 @@
 .time-grid {
-  .grid-title {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin-bottom: 10px;
-
-    h2 {
-      margin: 0;
-      font-size: 2.5em;
-      font-weight: 800;
-      font-style: italic;
-      letter-spacing: -0.03em;
-      /* Italic glyphs overhang the box; keep the gradient clip from cutting them off. */
-      padding-right: 0.12em;
-      background: linear-gradient(
-        105deg,
-        var(--accent),
-        oklch(from var(--accent) calc(l + 0.08) c calc(h + 40))
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hint {
-      font-size: 0.65em;
-      color: var(--text);
-    }
-  }
 
   .grid-scroll {
     overflow-x: auto;
