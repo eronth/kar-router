@@ -132,6 +132,7 @@ function App() {
         <CourseList
           times={times}
           selected={selectedCourse}
+          allowLegendary={settings.allowLegendary}
           onSelect={setSelectedCourse}
         />
         <TimeGrid
