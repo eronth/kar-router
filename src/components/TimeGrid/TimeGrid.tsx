@@ -71,7 +71,7 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
         <table>
           <thead>
             <tr>
-              <th className="corner" aria-hidden="true" />
+              <th className="riders-row-label">Riders</th>
               {RIDERS.map((rider) => (
                 <th
                   key={rider}
