@@ -1,0 +1,67 @@
+.route-results {
+  border-top: 1px solid var(--border);
+  padding: 20px;
+  text-align: left;
+
+  .results-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+
+    h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 3px;
+
+      button {
+        font: 13px var(--sans);
+        color: var(--text);
+        background: none;
+        border: none;
+        border-radius: 6px;
+        padding: 5px 14px;
+        cursor: pointer;
+        transition: color 0.2s, background 0.2s;
+
+        &.active {
+          color: var(--accent);
+          background: var(--bg);
+          box-shadow: var(--shadow);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--accent);
+          outline-offset: 1px;
+        }
+      }
+    }
+  }
+
+  .status {
+    font-size: 14px;
+    color: var(--text);
+
+    .missing {
+      color: var(--text-h);
+    }
+  }
+
+  .route-cards {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+
+    @media (max-width: 1024px) {
+      flex-direction: column;
+    }
+  }
+}

@@ -1,14 +1,14 @@
-export type OldCourse
+export type NewCourse
   = 'Floria  Fields' | 'Waveflow Waters' | 'Airtopia Ruins'
   | 'Crystalline Fissure' | 'Steamgust Forge' | 'Cavernous Corners'
   | 'Cyberion Highway' | 'Mount Amberfalls' | 'Galactic Nova';
 
-export type NewCourse
+export type OldCourse
   = 'Fantasy Meadows' | 'Celestial Valley' | 'Sky Sands'
   | 'Frozen Hillside' | 'Magma Flows' | 'Beanstalk Park'
   | 'Machien Passage' | 'Checker Knights' | 'Nebula Belt';
 
-export type Course = OldCourse | NewCourse;
+export type Course = NewCourse | OldCourse;
 
 export type Rider
   = 'Kirby' | 'King Dedede' | 'Meta Knight' | 'Waddle Dee'

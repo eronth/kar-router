@@ -1,0 +1,57 @@
+.settings-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+
+  .label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 6px;
+  }
+
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font: 14px var(--sans);
+    color: var(--text);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 14px 5px 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.2s;
+    }
+
+    &:hover {
+      border-color: var(--accent-border);
+    }
+
+    &.on {
+      color: var(--accent);
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+
+      .dot {
+        background: var(--accent);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+  }
+}

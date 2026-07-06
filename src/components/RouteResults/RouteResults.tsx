@@ -1,0 +1,71 @@
+import { useState } from 'react'
+import type { SolverResult } from '../../utils/optimizer'
+import RouteCard from '../RouteCard/RouteCard'
+import './RouteResults.css'
+
+const TABS = [
+  { id: 'all', label: 'All Courses' },
+  { id: 'old', label: 'Classic Courses' },
+  { id: 'new', label: 'New Courses' },
+] as const
+
+type TabId = (typeof TABS)[number]['id']
+
+interface Props {
+  all: SolverResult
+  oldCourses: SolverResult
+  newCourses: SolverResult
+}
+
+export default function RouteResults({ all, oldCourses, newCourses }: Props) {
+  const [tab, setTab] = useState<TabId>('all')
+  const result = tab === 'all' ? all : tab === 'old' ? oldCourses : newCourses
+
+  return (
+    <section className="route-results">
+      <div className="results-head">
+        <h2>Best Routes</h2>
+        <div className="tabs">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              className={tab === t.id ? 'active' : undefined}
+              onClick={() => setTab(t.id)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {result.missing.length > 0 ? (
+        <p className="status">
+          Enter at least one time for every course to unlock route
+          calculation. Missing {result.missing.length}:{' '}
+          <span className="missing">{result.missing.join(', ')}</span>
+        </p>
+      ) : result.routes.length === 0 ? (
+        <p className="status">
+          No valid route exists with the current no-dupe rules — enter times
+          for more star/rider combos to open up options.
+        </p>
+      ) : (
+        <>
+          {result.truncated && (
+            <p className="status">
+              Search space was huge, so these are the
+              best routes found within
+              the search budget — they may not be perfectly optimal.
+            </p>
+          )}
+          <div className="route-cards">
+            {result.routes.map((route, index) => (
+              <RouteCard key={index} route={route} rank={index + 1} />
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+  )
+}

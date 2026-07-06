@@ -1,122 +1,103 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 import Header from './components/Header/Header'
+import SettingsBar, { type Settings } from './components/SettingsBar/SettingsBar'
+import CourseList from './components/CourseList/CourseList'
+import TimeGrid from './components/TimeGrid/TimeGrid'
+import RouteResults from './components/RouteResults/RouteResults'
+import { COURSES, OLD_COURSES, NEW_COURSES } from './data/gameData'
+import {
+  comboKey,
+  findTopRoutes,
+  type TimesData,
+} from './utils/optimizer'
+import type { Course, Rider, Star } from './types/types'
+
+const TIMES_KEY = 'kar-router:times'
+const SETTINGS_KEY = 'kar-router:settings'
+
+function loadStored<T>(key: string, fallback: T): T {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? { ...fallback, ...JSON.parse(raw) } : fallback
+  } catch {
+    return fallback
+  }
+}
+
+const DEFAULT_SETTINGS: Settings = {
+  noDupeRiders: false,
+  noDupeStars: true,
+  allowLegendary: true,
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [times, setTimes] = useState<TimesData>(() =>
+    loadStored<TimesData>(TIMES_KEY, {}),
+  )
+  const [settings, setSettings] = useState<Settings>(() =>
+    loadStored(SETTINGS_KEY, DEFAULT_SETTINGS),
+  )
+  const [selectedCourse, setSelectedCourse] = useState<Course>(COURSES[0])
+
+  useEffect(() => {
+    localStorage.setItem(TIMES_KEY, JSON.stringify(times))
+  }, [times])
+
+  useEffect(() => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
+  }, [settings])
+
+  const setTime = (
+    course: Course,
+    star: Star,
+    rider: Rider,
+    ms: number | null,
+  ) => {
+    setTimes((prev) => {
+      const record = { ...(prev[course] ?? {}) }
+      const key = comboKey(star, rider)
+      if (ms === null) delete record[key]
+      else record[key] = ms
+      return { ...prev, [course]: record }
+    })
+  }
+
+  const allResult = useMemo(
+    () => findTopRoutes(COURSES, times, settings),
+    [times, settings],
+  )
+  const oldResult = useMemo(
+    () => findTopRoutes(OLD_COURSES, times, settings),
+    [times, settings],
+  )
+  const newResult = useMemo(
+    () => findTopRoutes(NEW_COURSES, times, settings),
+    [times, settings],
+  )
 
   return (
     <>
-    <Header />
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <Header />
+      <SettingsBar settings={settings} onChange={setSettings} />
+      <main className="planner">
+        <CourseList
+          times={times}
+          selected={selectedCourse}
+          onSelect={setSelectedCourse}
+        />
+        <TimeGrid
+          course={selectedCourse}
+          record={times[selectedCourse] ?? {}}
+          allowLegendary={settings.allowLegendary}
+          onSetTime={setTime}
+        />
+      </main>
+      <RouteResults
+        all={allResult}
+        oldCourses={oldResult}
+        newCourses={newResult}
+      />
     </>
   )
 }
