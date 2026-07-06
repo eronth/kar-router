@@ -5,6 +5,7 @@ import SettingsBar, { type Settings } from './components/SettingsBar/SettingsBar
 import CourseList from './components/CourseList/CourseList'
 import TimeGrid from './components/TimeGrid/TimeGrid'
 import DataTransfer from './components/DataTransfer/DataTransfer'
+import DevFill from './components/DevFill/DevFill'
 import RouteResults from './components/RouteResults/RouteResults'
 import { COURSES, OLD_COURSES, NEW_COURSES } from './data/gameData'
 import {
@@ -112,6 +113,7 @@ function App() {
           onReplace={importReplace}
           onMerge={importMerge}
         />
+        {import.meta.env.DEV && <DevFill onFill={importMerge} />}
       </SettingsBar>
       <main className="planner">
         <CourseList
