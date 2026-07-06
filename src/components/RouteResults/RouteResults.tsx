@@ -28,7 +28,7 @@ export default function RouteResults({
   onFindOptimal,
 }: Props) {
   const [tab, setTab] = useState<TabId>('all')
-  const [pickStyle, setPickStyle] = useState<PickStyle>('inline')
+  const [pickStyle, setPickStyle] = useState<PickStyle>('time-icons')
   const result = tab === 'all' ? all : tab === 'old' ? oldCourses : newCourses
 
   return (
@@ -98,7 +98,13 @@ export default function RouteResults({
           )}
           <div className="route-cards">
             {result.routes.map((route, index) => (
-              <RouteCard key={index} route={route} rank={index + 1} pickStyle={pickStyle} />
+              <RouteCard
+                key={index}
+                route={route}
+                rank={index + 1}
+                pickStyle={pickStyle}
+                prevRoute={index > 0 ? result.routes[index - 1] : undefined}
+              />
             ))}
           </div>
         </>

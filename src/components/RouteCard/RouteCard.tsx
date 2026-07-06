@@ -17,11 +17,18 @@ export default function RouteCard({
   route,
   rank,
   pickStyle = "inline",
+  prevRoute,
 }: {
   route: Route;
   rank: number;
   pickStyle?: PickStyle;
+  /** Route ranked just above this one; picks that differ from it get a highlight tint. */
+  prevRoute?: Route;
 }) {
+  const prevPicks = new Map(
+    prevRoute?.picks.map((p) => [p.course, `${p.star}|${p.rider}`]),
+  );
+
   return (<div className="route-card">
 
     <div className="route-head">
@@ -31,6 +38,8 @@ export default function RouteCard({
 
     <div className="route-body">
       {route.picks.map((pick) => {
+        const changed =
+          prevRoute && prevPicks.get(pick.course) !== `${pick.star}|${pick.rider}`;
         const course = (
           <span className="course" title={pick.course}>
             {pick.course}
@@ -41,11 +50,11 @@ export default function RouteCard({
         const time = <span className="time">{formatMs(pick.ms)}</span>;
 
         if (pickStyle === "inline") {
-          return (<div className="pick" key={pick.course}>
+          return (<div className={changed ? "pick pick-changed" : "pick"} key={pick.course}>
             {course}{star}{rider}{time}
           </div>);
         }
-        return (<div className="pick pick-stacked" key={pick.course}>
+        return (<div className={`pick pick-stacked${changed ? " pick-changed" : ""}`} key={pick.course}>
           <div className="pick-row">
             {course}
             {pickStyle === "time-below" && <>{star}{rider}</>}

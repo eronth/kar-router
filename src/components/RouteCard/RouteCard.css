@@ -46,6 +46,11 @@
       background: var(--social-bg);
     }
 
+    .pick-changed {
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+    }
+
     .pick-stacked {
       flex-direction: column;
       gap: 1px;
