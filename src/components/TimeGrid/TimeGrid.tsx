@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './TimeGrid.css'
 import { RIDERS, RIDER_ICONS, STAR_ICONS, STAR_GROUPS } from '../../data/gameData'
 import { comboKey, type CourseTimes } from '../../utils/optimizer'
@@ -10,9 +11,11 @@ interface TimeCellProps {
   disabled: boolean
   label: string
   onCommit: (ms: number | null) => void
+  onFocus: () => void
+  onBlur: () => void
 }
 
-function TimeCell({ value, isBest, disabled, label, onCommit }: TimeCellProps) {
+function TimeCell({ value, isBest, disabled, label, onCommit, onFocus, onBlur }: TimeCellProps) {
   return (
     <input
       // Remount on committed value change so defaultValue re-renders formatted.
@@ -27,7 +30,9 @@ function TimeCell({ value, isBest, disabled, label, onCommit }: TimeCellProps) {
       onKeyDown={(event) => {
         if (event.key === 'Enter') event.currentTarget.blur()
       }}
+      onFocus={onFocus}
       onBlur={(event) => {
+        onBlur()
         const raw = event.currentTarget.value.trim()
         if (raw === '') {
           if (value !== undefined) onCommit(null)
@@ -55,6 +60,7 @@ interface Props {
 export default function TimeGrid({ course, record, allowLegendary, onSetTime }: Props) {
   const entries = Object.values(record)
   const bestMs = entries.length > 0 ? Math.min(...entries) : null
+  const [active, setActive] = useState<{ star: Star; rider: Rider } | null>(null)
 
   return (
     <div className="time-grid">
@@ -71,7 +77,11 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
             <tr>
               <th className="corner" aria-hidden="true" />
               {RIDERS.map((rider) => (
-                <th key={rider} className="rider-head" title={rider}>
+                <th
+                  key={rider}
+                  className={active?.rider === rider ? 'rider-head hl' : 'rider-head'}
+                  title={rider}
+                >
                   <img src={RIDER_ICONS[rider]} alt={rider} />
                 </th>
               ))}
@@ -89,7 +99,10 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
                 </tr>
                 {group.stars.map((star) => (
                   <tr key={star}>
-                    <th className="star-head" title={star}>
+                    <th
+                      className={active?.star === star ? 'star-head hl' : 'star-head'}
+                      title={star}
+                    >
                       <div>
                         <img src={STAR_ICONS[star]} alt="" />
                         <span>{star}</span>
@@ -97,14 +110,18 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
                     </th>
                     {RIDERS.map((rider) => {
                       const value = record[comboKey(star, rider)]
+                      const inCross =
+                        active !== null && (active.star === star || active.rider === rider)
                       return (
-                        <td key={rider}>
+                        <td key={rider} className={inCross ? 'hl' : undefined}>
                           <TimeCell
                             value={value}
                             isBest={value !== undefined && value === bestMs}
                             disabled={groupOff}
                             label={`${star} + ${rider}`}
                             onCommit={(ms) => onSetTime(course, star, rider, ms)}
+                            onFocus={() => setActive({ star, rider })}
+                            onBlur={() => setActive(null)}
                           />
                         </td>
                       )

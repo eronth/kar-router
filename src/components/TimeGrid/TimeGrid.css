@@ -7,11 +7,12 @@
 
     h2 {
       margin: 0;
-      font-size: 20px;
+      font-size: 2.5em;
+      color: var(--accent);
     }
 
     .hint {
-      font-size: 12px;
+      font-size: 0.65em;
       color: var(--text);
     }
   }
@@ -39,6 +40,7 @@
     width: 44px;
     padding: 3px 0 1px;
     background: var(--social-bg);
+    text-align: center;
 
     img {
       width: 26px;
@@ -88,9 +90,15 @@
     }
   }
 
+  tbody td {
+    /* Acts as min-height; gives the input's height: 100% a base to resolve against. */
+    height: 1px;
+  }
+
   td input {
-    width: 44px;
-    height: 24px;
+    display: block;
+    width: 4.6em;
+    min-height: 24px;
     box-sizing: border-box;
     border: none;
     background: transparent;
@@ -130,5 +138,11 @@
 
   tbody tr:hover td {
     background: var(--code-bg);
+  }
+
+  th.hl,
+  td.hl,
+  tbody tr:hover td.hl {
+    background: var(--accent-bg);
   }
 }
