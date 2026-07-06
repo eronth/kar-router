@@ -1,4 +1,7 @@
 .time-grid {
+  --star-head-img-size: 22px;
+  --star-head-top-bottom-padding: 1px;
+  --star-head-left-right-padding: 4px;
 
   .grid-scroll {
     overflow-x: auto;
@@ -52,7 +55,7 @@
 
   .star-head {
     width: 118px;
-    padding: 1px 4px;
+    padding: var(--star-head-top-bottom-padding) var(--star-head-left-right-padding);
     background: var(--social-bg);
     font-weight: 400;
 
@@ -63,8 +66,8 @@
     }
 
     img {
-      width: 22px;
-      height: 22px;
+      width: var(--star-head-img-size);
+      height: var(--star-head-img-size);
       object-fit: contain;
       flex-shrink: 0;
     }
@@ -88,7 +91,8 @@
     display: block;
     width: 100%;
     height: 100%;
-    min-height: 24px;
+    min-height: calc(var(--star-head-img-size) 
+      + 2 * var(--star-head-top-bottom-padding));
     box-sizing: border-box;
     border: none;
     background: transparent;
@@ -130,9 +134,25 @@
     background: var(--code-bg);
   }
 
-  th.hl,
-  td.hl,
-  tbody tr:hover td.hl {
+  .rider-head,
+  .star-head {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .rider-head:hover,
+  .star-head:hover {
     background: var(--accent-bg);
+  }
+
+  th.sel,
+  td.sel,
+  tbody tr:hover td.sel {
+    background: var(--accent-bg);
+  }
+
+  .star-head.sel span {
+    font-weight: 700;
+    color: var(--accent);
   }
 }

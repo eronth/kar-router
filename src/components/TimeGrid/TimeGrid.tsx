@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import './TimeGrid.css'
 import { RIDERS, RIDER_ICONS, STAR_ICONS, STAR_GROUPS } from '../../data/gameData'
 import { comboKey, type CourseTimes } from '../../utils/optimizer'
 import { formatMs, parseTimeInput } from '../../utils/time'
 import type { Course, Rider, Star } from '../../types/types'
+import TimeGridTitleRegion from './TimeGridTitleRegion/TimeGridTitleRegion'
 
 interface TimeCellProps {
   value: number | undefined
@@ -12,12 +13,21 @@ interface TimeCellProps {
   label: string
   onCommit: (ms: number | null) => void
   onFocus: () => void
-  onBlur: () => void
+  inputRef: (el: HTMLInputElement | null) => void
 }
 
-function TimeCell({ value, isBest, disabled, label, onCommit, onFocus, onBlur }: TimeCellProps) {
+function TimeCell({
+  value,
+  isBest,
+  disabled,
+  label,
+  onCommit,
+  onFocus,
+  inputRef,
+}: TimeCellProps) {
   return (
     <input
+      ref={inputRef}
       // Remount on committed value change so defaultValue re-renders formatted.
       key={value ?? 'empty'}
       type="text"
@@ -32,7 +42,6 @@ function TimeCell({ value, isBest, disabled, label, onCommit, onFocus, onBlur }:
       }}
       onFocus={onFocus}
       onBlur={(event) => {
-        onBlur()
         const raw = event.currentTarget.value.trim()
         if (raw === '') {
           if (value !== undefined) onCommit(null)
@@ -60,7 +69,25 @@ interface Props {
 export default function TimeGrid({ course, record, allowLegendary, onSetTime }: Props) {
   const entries = Object.values(record)
   const bestMs = entries.length > 0 ? Math.min(...entries) : null
-  const [active, setActive] = useState<{ star: Star; rider: Rider } | null>(null)
+  const [selStar, setSelStar] = useState<Star | null>(null)
+  const [selRider, setSelRider] = useState<Rider | null>(null)
+  const inputRefs = useRef(new Map<string, HTMLInputElement>())
+
+  function toggleStar(star: Star) {
+    const next = selStar === star ? null : star
+    setSelStar(next)
+    if (next !== null && selRider !== null) {
+      inputRefs.current.get(comboKey(next, selRider))?.focus()
+    }
+  }
+
+  function toggleRider(rider: Rider) {
+    const next = selRider === rider ? null : rider
+    setSelRider(next)
+    if (next !== null && selStar !== null) {
+      inputRefs.current.get(comboKey(selStar, next))?.focus()
+    }
+  }
 
   return (
     <div className="time-grid">
@@ -75,8 +102,9 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
               {RIDERS.map((rider) => (
                 <th
                   key={rider}
-                  className={active?.rider === rider ? 'rider-head hl' : 'rider-head'}
+                  className={selRider === rider ? 'rider-head sel' : 'rider-head'}
                   title={rider}
+                  onClick={() => toggleRider(rider)}
                 >
                   <img src={RIDER_ICONS[rider]} alt={rider} />
                 </th>
@@ -96,8 +124,9 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
                 {group.stars.map((star) => (
                   <tr key={star}>
                     <th
-                      className={active?.star === star ? 'star-head hl' : 'star-head'}
+                      className={selStar === star ? 'star-head sel' : 'star-head'}
                       title={star}
+                      onClick={() => toggleStar(star)}
                     >
                       <div>
                         <img src={STAR_ICONS[star]} alt="" />
@@ -106,18 +135,24 @@ export default function TimeGrid({ course, record, allowLegendary, onSetTime }: 
                     </th>
                     {RIDERS.map((rider) => {
                       const value = record[comboKey(star, rider)]
-                      const inCross =
-                        active !== null && (active.star === star || active.rider === rider)
+                      const inSel = selStar === star || selRider === rider
                       return (
-                        <td key={rider} className={inCross ? 'hl' : undefined}>
+                        <td key={rider} className={inSel ? 'sel' : undefined}>
                           <TimeCell
                             value={value}
                             isBest={value !== undefined && value === bestMs}
                             disabled={groupOff}
                             label={`${star} + ${rider}`}
                             onCommit={(ms) => onSetTime(course, star, rider, ms)}
-                            onFocus={() => setActive({ star, rider })}
-                            onBlur={() => setActive(null)}
+                            onFocus={() => {
+                              setSelStar(star)
+                              setSelRider(rider)
+                            }}
+                            inputRef={(el) => {
+                              const key = comboKey(star, rider)
+                              if (el) inputRefs.current.set(key, el)
+                              else inputRefs.current.delete(key)
+                            }}
                           />
                         </td>
                       )
