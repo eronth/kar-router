@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import type { Course } from "../../../types/types";
 import "./TimeGridTitleRegion.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,9 +8,10 @@ type Props = {
   course: Course
   onClearCourse: (course: Course) => void
   onClearAll: () => void
+  children?: ReactNode
 };
 
-export default function TimeGridTitleRegion({ course, onClearCourse, onClearAll }: Props) {
+export default function TimeGridTitleRegion({ course, onClearCourse, onClearAll, children }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const closeDialog = () => dialogRef.current?.close();
@@ -21,19 +22,22 @@ export default function TimeGridTitleRegion({ course, onClearCourse, onClearAll 
       Enter times as m:ss.xx or seconds — Enter or click away to save,
       clear to delete
     </span>
-    <button
-      className="clear-times-button"
-      onClick={() => dialogRef.current?.showModal()}
-    >
-      Clear Times
-    </button>
+    <div className="title-actions">
+      {children}
+      <button
+        className="clear-times-button"
+        onClick={() => dialogRef.current?.showModal()}
+      >
+        Clear Times
+      </button>
+    </div>
     <dialog
       ref={dialogRef}
       className="clear-times-dialog"
       onClick={(event) => {
         // Backdrop clicks target the dialog element itself; content clicks
         // land on the inner wrapper.
-        if (event.target === dialogRef.current) closeDialog();
+        if (event.target === dialogRef.current) { closeDialog(); }
       }}
     >
       <div className="clear-times-dialog-body">

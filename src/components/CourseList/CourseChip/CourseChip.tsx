@@ -1,8 +1,9 @@
-import { 
+import {
   RIDERS,
-  OLD_STARS, NEW_STARS, LEGENDARY_STARS
+  OLD_STARS, NEW_STARS, LEGENDARY_STARS,
+  isLegendaryStar,
  } from '../../../data/gameData';
-import type { Course, Star } from "../../../types/types";
+import type { Course } from "../../../types/types";
 import { splitComboKey } from "../../../utils/optimizer";
 import { formatMs } from "../../../utils/time";
 import type { CourseListProps } from '../CourseList';
@@ -20,17 +21,16 @@ export default function CourseChip({
   onSelect,
 }: Props) {
   const record = times[course] ?? {};
-  const entries = Object.values(record);
-  const best = entries.length > 0 ? Math.min(...entries) : null;
+  // Only combos the current ruleset permits count toward best time and totals.
+  const countedTimes = Object.entries(record)
+    .filter(([key]) => allowLegendary || !isLegendaryStar(splitComboKey(key).star))
+    .map(([, ms]) => ms);
+  const best = countedTimes.length > 0 ? Math.min(...countedTimes) : null;
 
   const maxStarCount = OLD_STARS.length + NEW_STARS.length + (allowLegendary ? LEGENDARY_STARS.length : 0);
   const maxTimesCount = RIDERS.length * maxStarCount;
 
-  const currentTimesCount = allowLegendary
-  ? Object.keys(record).length
-  : Object.keys(record).filter(
-      key => !(LEGENDARY_STARS as readonly Star[]).includes(splitComboKey(key).star)
-    ).length;
+  const currentTimesCount = countedTimes.length;
 
   const timesCountText = (currentTimesCount >= maxTimesCount) ? 'All' : `${currentTimesCount}`;
   const timesWord      = (currentTimesCount === 1) ? 'time' : 'times';
@@ -39,7 +39,7 @@ export default function CourseChip({
   return (
     <button
       type="button"
-      className={`course-chip${selected === course ? ' selected' : ''}${entries.length === 0 ? ' empty' : ''}`}
+      className={`course-chip${selected === course ? ' selected' : ''}${countedTimes.length === 0 ? ' empty' : ''}`}
       onClick={() => onSelect(course)}
     >
       <span className="name">{course}</span>

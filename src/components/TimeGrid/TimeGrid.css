@@ -185,6 +185,20 @@
         font-weight: 700;
         background: var(--accent-bg);
       }
+
+      /* Absolute best across the allowed groups; always paired with .best. */
+      &.best-of-best {
+        color: var(--star);
+      }
+
+      &.below-avg {
+        background: var(--warning-bg-soft);
+      }
+
+      &.worst {
+        color: var(--warning);
+        background: var(--warning-bg);
+      }
     }
   }
 
@@ -204,6 +218,28 @@
   .star-head {
     cursor: pointer;
     user-select: none;
+  }
+
+  .view-toggle {
+    font: inherit;
+    font-size: 0.75em;
+    padding: 5px 12px;
+    color: var(--text);
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+
+    &:hover {
+      border-color: var(--accent-border);
+    }
+
+    &.on {
+      color: var(--accent);
+      background: var(--accent-bg);
+      border-color: var(--accent-border);
+    }
   }
 
   /* Sticky header cells swap only the image layer so the opaque

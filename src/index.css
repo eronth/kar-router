@@ -50,6 +50,14 @@
     oklch(58% 0.21 25),
     oklch(58% 0.21 25)
   );
+  --warning-bg: light-dark(
+    oklch(58% 0.21 25 / 0.16),
+    oklch(58% 0.21 25 / 0.24)
+  );
+  --warning-bg-soft: light-dark(
+    oklch(58% 0.21 25 / 0.06),
+    oklch(58% 0.21 25 / 0.1)
+  );
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;

@@ -122,6 +122,10 @@ export const LEGENDARY_STARS: LegendaryStar[] = [
 
 export const STARS: Star[] = [...OLD_STARS, ...NEW_STARS, ...LEGENDARY_STARS];
 
+export function isLegendaryStar(star: Star): boolean {
+  return (LEGENDARY_STARS as Star[]).includes(star);
+}
+
 export const STAR_ICONS: Record<Star, string> = {
   'Warp Star': warpStarIcon,
   'Compact Star': compactStarIcon,
