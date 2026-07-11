@@ -37,7 +37,7 @@ function loadStored<T>(key: string, fallback: T): T {
 
 const DEFAULT_SETTINGS: Settings = {
   noDupeRiders: false,
-  noDupeStars: true,
+  noDupeStars: false,
   allowLegendary: true,
 }
 
