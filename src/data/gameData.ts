@@ -2,6 +2,7 @@ import type {
   Course, OldCourse, NewCourse,
   Rider,
   Star, OldStar, NewStar, LegendaryStar,
+  CityTrialOnlyStar,
 } from '../types/types'
 
 import kirbyIcon from '../assets/riders/KARs_Kirby_icon.png'
@@ -110,6 +111,10 @@ export const OLD_STARS: OldStar[] = [
   'Flight Warp Star',
 ];
 
+export const CITY_TRIAL_STARS: CityTrialOnlyStar[] = [
+  'Compact Star', 'Flight Warp Star', 'Gigantes',
+];
+
 export const NEW_STARS: NewStar[] = [
   'Hop Star', 'Vampire Star', 'Paper Star', 'Chariot',
   'Battle Chariot', 'Tank Star', 'Bull Tank',
@@ -124,6 +129,22 @@ export const STARS: Star[] = [...OLD_STARS, ...NEW_STARS, ...LEGENDARY_STARS];
 
 export function isLegendaryStar(star: Star): boolean {
   return (LEGENDARY_STARS as Star[]).includes(star);
+}
+
+export const isCityTrialOnlyStar = (star: Star): boolean =>
+  (CITY_TRIAL_STARS as Star[]).includes(star);
+
+/** The ruleset flags that decide which stars exist at all. */
+export interface StarRuleset {
+  allowLegendary: boolean
+  showCityTrialStars: boolean
+}
+
+/** Excluded stars count nowhere: not in routes, not in bests, not in totals. */
+export function isStarAllowed(star: Star, ruleset: StarRuleset): boolean {
+  if (!ruleset.allowLegendary && isLegendaryStar(star)) { return false; }
+  if (!ruleset.showCityTrialStars && isCityTrialOnlyStar(star)) { return false; }
+  return true;
 }
 
 export const STAR_ICONS: Record<Star, string> = {

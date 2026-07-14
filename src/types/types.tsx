@@ -33,4 +33,7 @@ export type NewStar
 export type LegendaryStar
   = 'Dragoon' | 'Hydra' | 'Leo' | 'Gigantes';
 
-export type Star = OldStar | NewStar | LegendaryStar;
+export type CityTrialOnlyStar
+  = 'Compact Star' | 'Flight Warp Star' | 'Gigantes';
+
+export type Star = OldStar | NewStar | LegendaryStar | CityTrialOnlyStar;

@@ -15,6 +15,8 @@ export interface ImportSummary {
   skippedCount: number
 }
 
+// Keys every export has carried. `showCityTrialStars` came later, so exports
+// written before it are still valid — they just fall back to its default.
 const SETTINGS_KEYS = [
   'noDupeRiders',
   'noDupeStars',
@@ -109,6 +111,7 @@ export function parseImport(text: string): ImportSummary {
         noDupeRiders: candidate.noDupeRiders as boolean,
         noDupeStars: candidate.noDupeStars as boolean,
         allowLegendary: candidate.allowLegendary as boolean,
+        showCityTrialStars: candidate.showCityTrialStars === true,
       }
     }
   }

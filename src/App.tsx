@@ -39,6 +39,7 @@ const DEFAULT_SETTINGS: Settings = {
   noDupeRiders: false,
   noDupeStars: false,
   allowLegendary: true,
+  showCityTrialStars: false,
 }
 
 function App() {
@@ -132,13 +133,13 @@ function App() {
         <CourseList
           times={times}
           selected={selectedCourse}
-          allowLegendary={settings.allowLegendary}
+          ruleset={settings}
           onSelect={setSelectedCourse}
         />
         <TimeGrid
           course={selectedCourse}
           record={times[selectedCourse] ?? {}}
-          allowLegendary={settings.allowLegendary}
+          ruleset={settings}
           onSetTime={setTime}
           onClearCourse={clearCourseTimes}
           onClearAll={clearAllTimes}

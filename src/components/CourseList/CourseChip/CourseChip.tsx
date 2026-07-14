@@ -1,7 +1,6 @@
 import {
-  RIDERS,
-  OLD_STARS, NEW_STARS, LEGENDARY_STARS,
-  isLegendaryStar,
+  RIDERS, STARS,
+  isStarAllowed,
  } from '../../../data/gameData';
 import type { Course } from "../../../types/types";
 import { splitComboKey } from "../../../utils/optimizer";
@@ -17,17 +16,17 @@ export default function CourseChip({
   course,
   times,
   selected,
-  allowLegendary,
+  ruleset,
   onSelect,
 }: Props) {
   const record = times[course] ?? {};
   // Only combos the current ruleset permits count toward best time and totals.
   const countedTimes = Object.entries(record)
-    .filter(([key]) => allowLegendary || !isLegendaryStar(splitComboKey(key).star))
+    .filter(([key]) => isStarAllowed(splitComboKey(key).star, ruleset))
     .map(([, ms]) => ms);
   const best = countedTimes.length > 0 ? Math.min(...countedTimes) : null;
 
-  const maxStarCount = OLD_STARS.length + NEW_STARS.length + (allowLegendary ? LEGENDARY_STARS.length : 0);
+  const maxStarCount = STARS.filter((star) => isStarAllowed(star, ruleset)).length;
   const maxTimesCount = RIDERS.length * maxStarCount;
 
   const currentTimesCount = countedTimes.length;

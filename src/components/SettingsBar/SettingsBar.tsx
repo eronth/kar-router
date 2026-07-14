@@ -5,7 +5,8 @@ export interface Settings {
   noDupeRiders: boolean
   noDupeStars: boolean
   allowLegendary: boolean
-}
+  showCityTrialStars: boolean
+};
 
 const OPTIONS: { key: keyof Settings; label: string; hint: string }[] = [
   {
@@ -23,7 +24,12 @@ const OPTIONS: { key: keyof Settings; label: string; hint: string }[] = [
     label: 'Legendary stars',
     hint: 'Allow Dragoon, Hydra, Leo and Gigantes',
   },
-]
+  {
+    key: 'showCityTrialStars',
+    label: 'City Trial stars',
+    hint: 'Show Compact Star, Flight Warp Star and Gigantes',
+  },
+];
 
 interface Props {
   settings: Settings

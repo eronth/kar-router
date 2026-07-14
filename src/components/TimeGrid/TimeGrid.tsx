@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import './TimeGrid.css'
-import { RIDERS, RIDER_ICONS, STAR_ICONS, STAR_GROUPS } from '../../data/gameData'
+import {
+  RIDERS, RIDER_ICONS, STAR_ICONS, STAR_GROUPS,
+  isCityTrialOnlyStar,
+  type StarGroup, type StarRuleset,
+} from '../../data/gameData'
 import { comboKey, type CourseTimes } from '../../utils/optimizer'
 import { formatMs, parseTimeInput } from '../../utils/time'
 import type { Course, Rider, Star } from '../../types/types'
@@ -62,7 +66,7 @@ function TimeCell({
 interface Props {
   course: Course
   record: CourseTimes
-  allowLegendary: boolean
+  ruleset: StarRuleset
   onSetTime: (course: Course, star: Star, rider: Rider, ms: number | null) => void
   onClearCourse: (course: Course) => void
   onClearAll: () => void
@@ -92,7 +96,7 @@ const VIEW_TOGGLES: { key: keyof ViewOptions; label: string; hint: string }[] = 
 export default function TimeGrid({
   course,
   record,
-  allowLegendary,
+  ruleset,
   onSetTime,
   onClearCourse,
   onClearAll,
@@ -110,20 +114,29 @@ export default function TimeGrid({
     localStorage.setItem(VIEW_KEY, JSON.stringify(view))
   }, [view])
 
-  // Best per star group, plus best/worst/average over the groups the current
-  // ruleset allows — excluded legendary times never set the course-wide marks.
+  // City-Trial-only stars are hidden outright when the ruleset excludes them;
+  // legendary stars stay visible but greyed out, so they get the `groupOff`
+  // treatment below rather than being dropped here.
+  const visibleStars = (group: StarGroup) =>
+    group.stars.filter((star) => 
+      ruleset.showCityTrialStars 
+      || !isCityTrialOnlyStar(star),
+    );
+
+  // Best per star group, plus best/worst/average over the stars the current
+  // ruleset allows — excluded times never set the course-wide marks.
   const groupBests = new Map<string, number>()
   const rulesetTimes: number[] = []
   for (const group of STAR_GROUPS) {
     const values: number[] = []
-    for (const star of group.stars) {
+    for (const star of visibleStars(group)) {
       for (const rider of RIDERS) {
         const value = record[comboKey(star, rider)]
         if (value !== undefined) values.push(value)
       }
     }
-    if (values.length > 0) groupBests.set(group.label, Math.min(...values))
-    if (allowLegendary || !group.legendary) rulesetTimes.push(...values)
+    if (values.length > 0) { groupBests.set(group.label, Math.min(...values)); }
+    if (ruleset.allowLegendary || !group.legendary) { rulesetTimes.push(...values); }
   }
   const bestMs = rulesetTimes.length > 0 ? Math.min(...rulesetTimes) : null
   const worstMs = rulesetTimes.length > 0 ? Math.max(...rulesetTimes) : null
@@ -217,7 +230,9 @@ export default function TimeGrid({
             </tr>
           </thead>
           {STAR_GROUPS.map((group) => {
-            const groupOff = group.legendary && !allowLegendary
+            const stars = visibleStars(group)
+            if (stars.length === 0) { return null; }
+            const groupOff = group.legendary && !ruleset.allowLegendary
             const groupBest = groupBests.get(group.label)
             return (
               <tbody key={group.label} className={groupOff ? 'off' : undefined}>
@@ -229,7 +244,7 @@ export default function TimeGrid({
                     </span>
                   </th>
                 </tr>
-                {group.stars.map((star) => (
+                {stars.map((star) => (
                   <tr key={star}>
                     <th
                       className={selStar === star ? 'star-head sel' : 'star-head'}

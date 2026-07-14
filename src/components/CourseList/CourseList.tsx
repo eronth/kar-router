@@ -1,4 +1,4 @@
-import { OLD_COURSES, NEW_COURSES } from '../../data/gameData';
+import { OLD_COURSES, NEW_COURSES, type StarRuleset } from '../../data/gameData';
 import type { TimesData } from '../../utils/optimizer';
 import type { Course } from '../../types/types';
 import CourseChip from './CourseChip/CourseChip';
@@ -7,7 +7,7 @@ import './CourseList.css';
 export type CourseListProps = {
   times: TimesData;
   selected: Course;
-  allowLegendary: boolean;
+  ruleset: StarRuleset;
   onSelect: (course: Course) => void;
 };
 

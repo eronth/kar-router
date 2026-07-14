@@ -1,5 +1,5 @@
 import type { Course, Rider, Star } from '../types/types'
-import { LEGENDARY_STARS } from '../data/gameData'
+import { isStarAllowed, type StarRuleset } from '../data/gameData'
 
 /** `${star}|${rider}` */
 export type ComboKey = string
@@ -28,10 +28,9 @@ export interface Route {
   picks: RoutePick[]
 }
 
-export interface SolverOptions {
+export interface SolverOptions extends StarRuleset {
   noDupeStars: boolean
   noDupeRiders: boolean
-  allowLegendary: boolean
 }
 
 export interface SolverResult {
@@ -57,15 +56,13 @@ export interface CourseEntries {
   entries: Entry[]
 }
 
-const LEGENDARY_SET: ReadonlySet<string> = new Set(LEGENDARY_STARS)
-
 // Node budget for the automatic quick check. Keeps worst-case dense grids
 // responsive; realistic sparse data never gets close to it.
 export const QUICK_NODE_LIMIT = 5_000_000
 
 /**
  * Step 1 — gather the usable (star, rider, time) options for each course,
- * sorted fastest first, dropping legendary stars when they're not allowed.
+ * sorted fastest first, dropping stars the ruleset excludes.
  * Courses that end up with no options are reported in `missing`.
  */
 export function collectCourseEntries(
@@ -82,7 +79,7 @@ export function collectCourseEntries(
     if (record) {
       for (const [key, ms] of Object.entries(record)) {
         const { star, rider } = splitComboKey(key)
-        if (!options.allowLegendary && LEGENDARY_SET.has(star)) continue
+        if (!isStarAllowed(star, options)) continue
         entries.push({ star, rider, ms })
       }
     }

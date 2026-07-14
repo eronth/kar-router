@@ -12,24 +12,26 @@ import {
 } from './optimizer'
 
 // Real names so the Course/Star/Rider string unions typecheck.
-const C1: Course = 'Fantasy Meadows'
-const C2: Course = 'Celestial Valley'
-const C3: Course = 'Sky Sands'
-const COURSES3 = [C1, C2, C3]
+const C1: Course = 'Fantasy Meadows';
+const C2: Course = 'Celestial Valley';
+const C3: Course = 'Sky Sands';
+const COURSES3 = [C1, C2, C3];
 
-const WARP: Star = 'Warp Star'
-const WINGED: Star = 'Winged Star'
-const SHADOW: Star = 'Shadow Star'
-const DRAGOON: Star = 'Dragoon' // legendary
-const KIRBY: Rider = 'Kirby'
-const DEDEDE: Rider = 'King Dedede'
-const META: Rider = 'Meta Knight'
+const WARP: Star = 'Warp Star';
+const WINGED: Star = 'Winged Star';
+const SHADOW: Star = 'Shadow Star';
+const DRAGOON: Star = 'Dragoon'; // legendary
+const COMPACT: Star = 'Compact Star'; // City Trial only
+const KIRBY: Rider = 'Kirby';
+const DEDEDE: Rider = 'King Dedede';
+const META: Rider = 'Meta Knight';
 
 const OPEN: SolverOptions = {
   noDupeStars: false,
   noDupeRiders: false,
   allowLegendary: true,
-}
+  showCityTrialStars: true,
+};
 
 function timesOf(
   data: Partial<Record<Course, [Star, Rider, number][]>>,
@@ -84,6 +86,22 @@ describe('collectCourseEntries', () => {
       times,
       noLegendary,
     )
+    expect(missing).toEqual([C2])
+    expect(perCourse[0].entries).toEqual([
+      { star: WARP, rider: KIRBY, ms: 5000 },
+    ])
+  })
+
+  it('drops City Trial only stars when they are hidden', () => {
+    const times = timesOf({
+      [C1]: [
+        [COMPACT, KIRBY, 1000],
+        [WARP, KIRBY, 5000],
+      ],
+      [C2]: [[COMPACT, DEDEDE, 1000]],
+    })
+    const hidden = { ...OPEN, showCityTrialStars: false }
+    const { perCourse, missing } = collectCourseEntries([C1, C2], times, hidden)
     expect(missing).toEqual([C2])
     expect(perCourse[0].entries).toEqual([
       { star: WARP, rider: KIRBY, ms: 5000 },
